@@ -1,51 +1,6 @@
 // import React from 'react'
 
 const Workflow = () => {
-  // const steps = [
-  //   {
-  //     id: "01 // INGEST",
-  //     title: "CLAIM",
-  //     subtitle: "User Input",
-  //   },
-  //   {
-  //     id: "02 // PARSE",
-  //     title: "DECOMPOSE",
-  //     subtitle: "N-SubClaims",
-  //   },
-  //   {
-  //     id: "03 // FETCH",
-  //     title: "SEARCH",
-  //     subtitle: "SerpApi Multi-Hop",
-  //     highlightText: true,
-  //   },
-  //   {
-  //     id: "04 // EXAMINE",
-  //     title: "ANALYZE",
-  //     subtitle: "Gemini Core",
-  //   },
-  //   {
-  //     id: "05 // ATTACK ▸",
-  //     title: "CHALLENGE",
-  //     subtitle: "Adversarial Probe",
-  //     active: true,
-  //   },
-  //   {
-  //     id: "06 // WEIGH",
-  //     title: "VERIFY",
-  //     subtitle: "Bayesian Score",
-  //   },
-  //   {
-  //     id: "07 // LINK",
-  //     title: "GRAPH",
-  //     subtitle: "Dynamic Topology",
-  //   },
-  //   {
-  //     id: "08 // EMIT",
-  //     title: "RESULT",
-  //     subtitle: "Audit Dossier",
-  //     highlight: true,
-  //   },
-  // ];
   return (
     <>
       <div className="flex flex-col items-center justify-center w-full h-full mt-10">

@@ -1,7 +1,9 @@
+// import {Link} from "react-router-dom";
+
 const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 h-16 w-full border-b border-border bg-surface-soft/90 backdrop-blur-xl">
-      <div className="container-truthtrail flex h-full items-center justify-between">
+      <div className="container-verix flex h-full items-center justify-between">
         <div className="flex items-center gap-3">
           {/* NEED TO ADD A LOGO HERE */}
           <div className="flex h-9 w-9 items-center justify-center rounded-md border border-lemon/30 bg-surface-dark">
@@ -25,18 +27,12 @@ const Navbar = () => {
           >
             Home
           </a>
-          <a
-            href="#investigate"
-            className="font-sans text-sm text-text-secondary transition-colors hover:text-text-primary"
-          >
-            Investigate
-          </a>
 
           <a
             href="#graph"
             className="font-sans text-sm text-text-secondary transition-colors hover:text-text-primary"
           >
-            Evidence Graph
+            Evidence History
           </a>
 
           <a
