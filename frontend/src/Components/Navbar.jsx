@@ -1,14 +1,13 @@
 // import {Link} from "react-router-dom";
+import verixLogo from "../Assets/verix.png";
 
 const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 h-16 w-full border-b border-border bg-surface-soft/90 backdrop-blur-xl">
       <div className="container-verix flex h-full items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* NEED TO ADD A LOGO HERE */}
-          <div className="flex h-9 w-9 items-center justify-center rounded-md border border-lemon/30 bg-surface-dark">
-            <span className="font-mono text-lemon">VX</span>
-          </div>
+          {/* LOGO */}
+          <img src={verixLogo} alt="VeriX Logo" className="h-8 w-8" />
 
           <div>
             <div className="font-sans text-lg font-bold tracking-tight">
