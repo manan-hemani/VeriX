@@ -1,6 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.middleware.js";
 import ApiError from "../utils/ApiError.js";
-import successResponse from "../utils/ApiResponse.js";
+import {successResponse} from "../utils/ApiResponse.js";
 import agentService from "../services/agent.service.js";
 
 // POST /api/investigations

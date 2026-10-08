@@ -18,7 +18,6 @@ const generateText = async (prompt, options = {}) => {
   if (!prompt || !prompt.trim()) {
     throw new ApiError(400, "Gemini prompt cannot be empty");
   }
-
   try {
     const response = await ai.models.generateContent({
       model: MODEL,
@@ -93,14 +92,12 @@ const generateJSON = async (prompt, schema, options = {}) => {
     });
 
     const text = response.text;
-
     if (!text) {
       throw new ApiError(502, "Gemini returned an empty JSON response");
     }
 
     try {
       const parsed = JSON.parse(text);
-
       return {
         data: parsed,
         raw: response,
@@ -113,7 +110,11 @@ const generateJSON = async (prompt, schema, options = {}) => {
       });
     }
   } catch (error) {
-    console.error("Gemini Structured API Error:", error.message);
+    console.error("Gemini Structured API Error");
+    console.error("Message:", error.message);
+    console.error("Name:", error.name);
+    console.error("Cause:", error.cause);
+    console.error("Stack:", error.stack);
 
     if (error instanceof ApiError) {
       throw error;
@@ -123,6 +124,10 @@ const generateJSON = async (prompt, schema, options = {}) => {
       provider: "Gemini",
       originalError:
         process.env.NODE_ENV !== "production" ? error.message : undefined,
+      cause:
+        process.env.NODE_ENV !== "production"
+          ? error.cause?.message || String(error.cause)
+          : undefined,
     });
   }
 };
@@ -132,7 +137,6 @@ const analyzeClaim = async (claim) => {
   if (!claim || !claim.trim()) {
     throw new ApiError(400, "Claim is required");
   }
-
   const prompt = `
 You are VeriX, an AI claim investigation
 planning assistant.

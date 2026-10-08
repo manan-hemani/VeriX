@@ -1,5 +1,6 @@
 import crypto from "crypto";
-import geminiService from "./gemini.service.js";
+// import geminiService from "./gemini.service.js";
+import aiService from "./ai.service.js";
 import serpApiService from "./serpApi.service.js";
 import Investigation from "../models/invsetigationHistory.model.js";
 import ApiError from "../utils/ApiError.js";
@@ -142,7 +143,31 @@ function formatInvestigationDate(date) {
   }).format(new Date(date));
 }
 
-// GEMINI STRUCTURED OUTPUT SCHEMAS
+// STRUCTURED OUTPUT SCHEMAS
+const SUBCLAIMS_SCHEMA = {
+  type: "object",
+  properties: {
+    subclaims: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+          },
+          text: {
+            type: "string",
+          },
+          evidenceNeeded: {
+            type: "string",
+          },
+        },
+        required: ["id", "text", "evidenceNeeded"],
+      },
+    },
+  },
+  required: ["subclaims"],
+};
 const PLANNER_SCHEMA = {
   type: "object",
   properties: {
@@ -366,7 +391,8 @@ async function decomposeClaim(claim, state) {
     message: "Claim received and sent for decomposition.",
   });
 
-  const result = await geminiService.analyzeClaim(claim);
+  // const result = await geminiService.analyzeClaim(claim);
+  const result = await aiService.generateJSON(claim, SUBCLAIMS_SCHEMA);
 
   const rawSubclaims =
     result?.subclaims || result?.claims || result?.components || [];
@@ -470,7 +496,11 @@ Rules:
 Choose the best initial action.
 `;
 
-  const plan = await geminiService.generateJSON(prompt, PLANNER_SCHEMA, {
+  // const plan = await geminiService.generateJSON(prompt, PLANNER_SCHEMA, {
+  //   temperature: 0.2,
+  //   maxOutputTokens: 500,
+  // });
+  const plan = await aiService.generateJSON(prompt, PLANNER_SCHEMA, {
     temperature: 0.2,
     maxOutputTokens: 500,
   });
@@ -581,7 +611,11 @@ IMPORTANT:
 Choose a useful search query if another search is required.
 `;
 
-  return geminiService.generateJSON(prompt, PLANNER_SCHEMA, {
+  // return geminiService.generateJSON(prompt, PLANNER_SCHEMA, {
+  //   temperature: 0.2,
+  //   maxOutputTokens: 500,
+  // });
+  return aiService.generateJSON(prompt, PLANNER_SCHEMA, {
     temperature: 0.2,
     maxOutputTokens: 500,
   });
@@ -717,7 +751,14 @@ async function analyzeSearchResults({ claim, state, searchResults, query }) {
     message: "Gemini is analyzing the retrieved sources.",
   });
 
-  const result = await geminiService.analyzeEvidence({
+  // const result = await geminiService.analyzeEvidence({
+  //   claim,
+
+  //   subclaim: primarySubclaim?.text || claim,
+
+  //   searchResults,
+  // });
+  const result = await aiService.analyzeEvidence({
     claim,
 
     subclaim: primarySubclaim?.text || claim,
@@ -945,7 +986,11 @@ Important rules:
 Choose the next action if more investigation is required.
 `;
 
-  return geminiService.generateJSON(prompt, SUFFICIENCY_SCHEMA, {
+  // return geminiService.generateJSON(prompt, SUFFICIENCY_SCHEMA, {
+  //   temperature: 0.1,
+  //   maxOutputTokens: 500,
+  // });
+  return aiService.generateJSON(prompt, SUFFICIENCY_SCHEMA, {
     temperature: 0.1,
     maxOutputTokens: 500,
   });
@@ -1035,14 +1080,18 @@ Do not reveal chain-of-thought.
 Return only the requested JSON.
 `;
 
-  const verdict = await geminiService.generateJSON(
-    prompt,
-    FINAL_VERDICT_SCHEMA,
-    {
-      temperature: 0.1,
-      maxOutputTokens: 1000,
-    },
-  );
+  // const verdict = await geminiService.generateJSON(
+  //   prompt,
+  //   FINAL_VERDICT_SCHEMA,
+  //   {
+  //     temperature: 0.1,
+  //     maxOutputTokens: 1000,
+  //   },
+  // );
+  const verdict = await aiService.generateJSON(prompt, FINAL_VERDICT_SCHEMA, {
+    temperature: 0.1,
+    maxOutputTokens: 1000,
+  });
 
   return {
     status: normalizeStatus(verdict?.status),

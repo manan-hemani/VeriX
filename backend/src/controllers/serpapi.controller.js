@@ -1,5 +1,5 @@
 import serpApiService from "../services/serpApi.service.js";
-import successResponse from "../utils/ApiResponse.js";
+import { successResponse } from "../utils/ApiResponse.js";
 
 //  POST /api/search/web
 export const searchWeb = async (req, res) => {
@@ -8,6 +8,7 @@ export const searchWeb = async (req, res) => {
   const result = await serpApiService.searchWeb(query, {
     location,
   });
+  console.log("Search Web Result:", result);
 
   return successResponse({
     res,

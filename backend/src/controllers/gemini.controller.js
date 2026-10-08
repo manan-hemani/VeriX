@@ -1,5 +1,5 @@
 import geminiService from "../services/gemini.service.js";
-import successResponse from "../utils/ApiResponse.js";
+import { successResponse } from "../utils/ApiResponse.js";
 
 //  POST /api/gemini/test
 export const testGemini = async (req, res) => {
@@ -30,7 +30,7 @@ export const analyzeClaim = async (req, res) => {
   const { claim } = req.body;
 
   const result = await geminiService.analyzeClaim(claim);
-
+  console.log("Analyze Claim Result CONTROLLER:", result);
   return successResponse({
     res,
 

@@ -1,4 +1,4 @@
-const successResponse = ({
+export const successResponse = ({
   res,
   statusCode = 200,
   message = "Success",
@@ -11,7 +11,7 @@ const successResponse = ({
   });
 };
 
-const errorResponse = ({
+export const errorResponse = ({
   res,
   statusCode = 500,
   message = "Internal server error",
@@ -22,9 +22,4 @@ const errorResponse = ({
     message,
     ...(details && { details }),
   });
-};
-
-export default {
-  successResponse,
-  errorResponse,
 };
