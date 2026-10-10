@@ -332,7 +332,7 @@ const FINAL_VERDICT_SCHEMA = {
 };
 
 // INITIAL INVESTIGATION STATE
-function createInitialState(claim) {
+function createInitialState(claim, onEvent = () => {}) {
   return {
     claim,
 
@@ -369,16 +369,27 @@ function createInitialState(claim) {
 }
 
 // ACTIVITY TRACKING
+
 function addActivity(state, activity) {
-  state.activity.push({
+  const event = {
     id: generateId("activity"),
-
     cycle: state.currentCycle,
-
     timestamp: new Date(),
-
     ...activity,
-  });
+  };
+
+  // Preserve your existing activity history.
+  state.activity.push(event);
+
+  // Publish the same real event to the live frontend.
+  try {
+    state.onEvent?.(event);
+  } catch (error) {
+    // A disconnected browser must not crash the investigation.
+    console.error("Failed to publish investigation event:", error);
+  }
+
+  return event;
 }
 
 // CLAIM DECOMPOSITION
@@ -769,7 +780,14 @@ async function analyzeSearchResults({ claim, state, searchResults, query }) {
   const analyzedEvidence =
     result?.evidence || result?.sources || result?.analyses || [];
 
-  const evidence = mapAnalyzedEvidence(analyzedEvidence, searchResults, query);
+  // const evidence = mapAnalyzedEvidence(analyzedEvidence, searchResults, query);
+  const evidence = mapAnalyzedEvidence(
+    analyzedEvidence,
+    searchResults,
+    query,
+    primarySubclaim,
+  );
+  ``;
 
   state.evidence.push(...evidence);
 
@@ -797,7 +815,7 @@ async function analyzeSearchResults({ claim, state, searchResults, query }) {
 }
 
 // MAP GEMINI ANALYSIS → DATABASE EVIDENCE
-function mapAnalyzedEvidence(analyzedEvidence, searchResults, query) {
+function mapAnalyzedEvidence(analyzedEvidence, searchResults, query, subclaim) {
   const normalizedAnalysis = normalizeArray(analyzedEvidence);
 
   return normalizedAnalysis
@@ -846,6 +864,8 @@ function mapAnalyzedEvidence(analyzedEvidence, searchResults, query) {
         limitations,
 
         query,
+
+        subclaimId: subclaim?.id || null,
       };
     })
     .filter(Boolean);
@@ -1080,18 +1100,12 @@ Do not reveal chain-of-thought.
 Return only the requested JSON.
 `;
 
-  // const verdict = await geminiService.generateJSON(
-  //   prompt,
-  //   FINAL_VERDICT_SCHEMA,
-  //   {
-  //     temperature: 0.1,
-  //     maxOutputTokens: 1000,
-  //   },
-  // );
-  const verdict = await aiService.generateJSON(prompt, FINAL_VERDICT_SCHEMA, {
+  const response = await aiService.generateJSON(prompt, FINAL_VERDICT_SCHEMA, {
     temperature: 0.1,
     maxOutputTokens: 1000,
   });
+
+  const verdict = response?.data || response;
 
   return {
     status: normalizeStatus(verdict?.status),
@@ -1123,9 +1137,14 @@ Return only the requested JSON.
 
 // CONFIDENCE
 function clampConfidence(value) {
+  console.log("Raw confidence:", value);
+
   const number = Number(value);
 
+  console.log("Converted confidence:", number);
+
   if (Number.isNaN(number)) {
+    console.log("Confidence invalid -> returning 0");
     return 0;
   }
 
@@ -1255,7 +1274,9 @@ function buildGraph(state) {
       },
     });
 
-    const subclaim = state.subclaims[index % state.subclaims.length];
+    const subclaim = state.subclaims.find(
+      (item) => item.id === evidence.subclaimId,
+    );
 
     const sourceNodeId = subclaim ? `subclaim-${subclaim.id}` : claimNodeId;
 
@@ -1521,7 +1542,7 @@ async function investigateClaim(claim, options = {}) {
     throw new ApiError(400, "Claim must not exceed 2000 characters.");
   }
 
-  const state = createInitialState(normalizedClaim);
+  const state = createInitialState(normalizedClaim, options.onEvent);
 
   try {
     // STEP 1 — DECOMPOSE CLAIM
