@@ -1,4 +1,4 @@
-// import React from 'react'
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -25,18 +25,18 @@ const Hero = () => {
           and what remains unknown.
         </p>
         <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
+          <Link
             class="w-full sm:w-auto px-6 py-3.5 rounded bg-lemon text-blueberry font-headline-md text-body-lg font-bold hover:bg-lemon/90 transition-all duration-150 flex items-center justify-center gap-2"
-            href="#investigate"
+            to="/investigate"
           >
             <span>START INVESTIGATION</span>
-          </a>
-          <a
+          </Link>
+          <Link
             class="w-full sm:w-auto px-6 py-3.5 rounded bg-surface-container-low/60 hover:bg-surface-container border border-primary/20 hover:border-lemon-dark transition-all duration-150 flex items-center justify-center gap-2 font-headline-md text-body-lg font-bold"
-            href="#how-it-works"
+            to="/how-it-works"
           >
             <span>SEE HOW IT WORKS</span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

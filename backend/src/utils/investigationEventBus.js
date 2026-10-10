@@ -18,17 +18,24 @@ export function createInvestigationStream(runId = crypto.randomUUID()) {
   return runId;
 }
 
+function toFrame(event) {
+  return `id: ${event.id}\n` + `data: ${JSON.stringify(event)}\n\n`;
+}
+
 export function publishInvestigationEvent(runId, type, payload = {}) {
   const stream = streams.get(runId);
 
   if (!stream || stream.terminal) return null;
 
   const event = {
+    ...payload,
     id: crypto.randomUUID(),
     type: String(type).toUpperCase(),
     timestamp: new Date().toISOString(),
-    ...payload,
   };
+
+  // Temporary: confirm what your agent service actually emits, then remove.
+  console.log("[SSE emit]", event.type);
 
   stream.history.push(event);
 
@@ -36,10 +43,7 @@ export function publishInvestigationEvent(runId, type, payload = {}) {
     stream.history.splice(0, stream.history.length - MAX_HISTORY);
   }
 
-  const frame =
-    `id: ${event.id}\n` +
-    `event: ${event.type}\n` +
-    `data: ${JSON.stringify(event)}\n\n`;
+  const frame = toFrame(event);
 
   for (const client of stream.clients) {
     try {
@@ -89,15 +93,13 @@ export function attachInvestigationClient(runId, res, lastEventId) {
     }
   }
 
+  // Replay is what saves you from the race below: the POST returns 202 and the
+  // agent starts working immediately, but the browser needs a round trip to
+  // open the stream. Everything emitted in that gap is in `history`.
   for (const event of stream.history.slice(startIndex)) {
-    res.write(
-      `id: ${event.id}\n` +
-        `event: ${event.type}\n` +
-        `data: ${JSON.stringify(event)}\n\n`,
-    );
+    res.write(toFrame(event));
   }
 
-  // Don't leave completed streams open after replaying history.
   if (stream.terminal) {
     res.end();
     return true;

@@ -1,4 +1,4 @@
-// import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import verixLogo from "../Assets/verix.png";
 
 const Navbar = () => {
@@ -20,29 +20,31 @@ const Navbar = () => {
         </div>
 
         <nav className="hidden items-center gap-8 md:flex">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="font-sans text-sm text-text-secondary transition-colors hover:text-text-primary "
           >
             Home
-          </a>
+          </Link>
 
-          <a
-            href="#graph"
+          <Link
+            to="/evidence-history"
             className="font-sans text-sm text-text-secondary transition-colors hover:text-text-primary"
           >
             Evidence History
-          </a>
+          </Link>
 
-          <a
-            href="#how-it-works"
+          <Link
+            to="/how-it-works"
             className="font-sans text-sm text-text-secondary transition-colors hover:text-text-primary"
           >
             How It Works
-          </a>
+          </Link>
         </nav>
 
-        <button className="btn-primary px-4! py-2!">New Investigation</button>
+        <button className="btn-primary px-4! py-2!">
+          <Link to="/investigate">New Investigation</Link>
+        </button>
       </div>
     </header>
   );

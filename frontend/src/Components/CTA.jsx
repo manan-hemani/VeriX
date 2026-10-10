@@ -1,4 +1,4 @@
-// import React from "react";
+import { Link } from "react-router-dom";
 
 const CTA = () => {
   return (
@@ -28,7 +28,9 @@ const CTA = () => {
               placeholder="Enter a claim to investigate..."
               className="flex-1 px-3 py-2 outline-none bg-transparent"
             />
-            <button class="btn-primary">Investigate</button>
+            <button class="btn-primary">
+              <Link to="/investigate">Investigate</Link>
+            </button>
           </div>
         </div>
       </div>

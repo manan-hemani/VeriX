@@ -1,4 +1,4 @@
-// import React from 'react'
+import { Link } from "react-router-dom";
 
 const HowItWorks = () => {
   return (
@@ -376,8 +376,12 @@ const HowItWorks = () => {
               biomedical claim, financial disclosure, or policy statement.
             </p>
             <div className="flex flex-row items-center justify-center gap-4">
-              <button class="btn-primary">Start Investigation</button>
-              <button class="btn-secondary">View History</button>
+              <button class="btn-primary">
+                <Link to="/investigate">Start Investigation</Link>
+              </button>
+              <button class="btn-secondary">
+                <Link to="/evidence-history">View History</Link>
+              </button>
             </div>
           </div>
         </div>

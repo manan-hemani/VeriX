@@ -90,7 +90,7 @@ a {
 }
 
 img,
-svg {
+svg:not(.react-flow__renderer svg) {
   display: block;
   max-width: 100%;
 }
@@ -892,6 +892,106 @@ pre,
   color: var(--color-text-muted);
 
   font-size: 0.8rem;
+}
+
+/* React Flow control container */
+.react-flow__controls {
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong) !important;
+  border-radius: 10px !important;
+  background: var(--color-background-elevated) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Zoom in, zoom out, fit view, interactivity buttons */
+.react-flow__controls-button {
+  display: flex !important;
+  width: 36px !important;
+  height: 36px !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 0 !important;
+  border-bottom: 1px solid var(--color-border-subtle) !important;
+  background: var(--color-background-elevated) !important;
+  color: var(--color-text-primary) !important;
+
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+/* Don't leave the last button with a bottom border */
+.react-flow__controls-button:last-child {
+  border-bottom: 0 !important;
+}
+
+/* Override the default SVG styling too */
+.react-flow__controls-button svg {
+  width: 14px !important;
+  height: 14px !important;
+  fill: none !important;
+  stroke: var(--color-text-primary) !important;
+  stroke-width: 1.8 !important;
+}
+
+/* Hover and keyboard focus */
+.react-flow__controls-button:hover {
+  background: var(--color-surface-hover) !important;
+  color: var(--color-lemon) !important;
+}
+
+.react-flow__controls-button:hover svg {
+  stroke: var(--color-lemon) !important;
+}
+
+.react-flow__controls-button:focus-visible {
+  outline: 2px solid var(--color-lemon) !important;
+  outline-offset: -2px;
+}
+
+/* Disabled controls */
+.react-flow__controls-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* Canvas */
+.react-flow__pane {
+  cursor: grab;
+}
+
+.react-flow__pane:active {
+  cursor: grabbing;
+}
+
+/* Edge labels */
+.react-flow__edge-text {
+  fill: var(--color-text-primary) !important;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.react-flow__edge-textbg {
+  fill: var(--color-background-elevated) !important;
+  fill-opacity: 0.96 !important;
+}
+
+/* Keep graph nodes above their edges */
+.react-flow__node {
+  z-index: 1;
+}
+
+/* Make edges readable without overpowering the graph */
+.react-flow__edge path {
+  transition:
+    stroke 160ms ease,
+    stroke-width 160ms ease;
+}
+
+.react-flow__edge:hover path {
+  stroke-width: 3px;
 }
 
 /* MOBILE CARD FOOTER*/
